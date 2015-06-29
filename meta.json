@@ -3,26 +3,16 @@
  */
 {
     //Required. Inputs the module expects.
-    "inputs": [
-        //e.g.
-        /*
-        {
-            "id": "from",
-            "title":"From",
-            "type":"string"
-        }
-        */
-    ],
+    "inputs": [{
+        "id": "phone_number",
+        "title":"Phone Number",
+        "type":"string"
+    }, {
+        "id"    : "message",
+        "title" : "Message",
+        "type"  : "string"
+    }],
     //Required. Outputs the module emits.
-    "outputs": [
-      //e.g.
-      /*
-        {
-            "id": "from",
-            "title":"From",
-            "type":"array"
-        }
-      */
-    ],
+    "outputs": [],
     "title": "Dexter SMS" /* Required.A display name for the module */
 }

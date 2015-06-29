@@ -1,11 +1,12 @@
 {
-    "name": "dexter-sms",
-    "version": "0.0.1",
-    "description": "",
-    "main": "index.js",
-    "author": "Someone Somewhere",
-    "license": "ISC",
-    "dependencies": {
-        "lodash": "^3.9.3"
-    }
+  "name": "dexter-sms",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "author": "Someone Somewhere",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^3.9.3",
+    "restler": "^3.2.2"
+  }
 }
