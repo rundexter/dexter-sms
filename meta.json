@@ -14,5 +14,6 @@
     }],
     //Required. Outputs the module emits.
     "outputs": [],
+    "icon": "mobile",
     "title": "Dexter SMS" /* Required.A display name for the module */
 }
