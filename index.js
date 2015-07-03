@@ -27,6 +27,8 @@ module.exports = {
             'X-Authorization': api_key
         }
       }).on('complete', function(result, response) {
+          if(result instanceof Error) return this.fail(result);
+
           return response.statusCode == 200 
             ? this.complete({noop: true})
             : this.fail({ message: 'Unexpected Response From Server '+response.statusCode + result });
