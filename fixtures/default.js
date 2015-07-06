@@ -1,50 +1,57 @@
-var _   = require('lodash')
-  , env = require('./env')
-;
+var _ = require('lodash')
+    , env = require('./env')
+    ;
 
 module.exports = _.merge({
-    "internals": {
+    simulation: true
+    , instance_id: 'local_test_instance'
+    , urls: {
+        home: "http://rundexter.com/"
+    }
+    , instance_state: {
+        active_step :  "local_test_step"
+    }
+    , workflow: {
+        "id" : "local_test_workflow"
+        , "title": "Local test workflow"
+        , "description": "A fixture workflow used to test a module"
+    }
+    , environment: {
+       /*
+        * Any API keys you might need should go in the env.js file found in the same
+        * folder as this fixture.  For example:
+        *
+        "parse_app_id": "abc123"
+        , "parse_app_key": "foobar"
+        */
+    }
+    , user: {
         /*
-         * SAMPLE DATA 
-         *
-         * These properties will be set by the engine when your step is called.
+         * Your dexter user settings should go in the env.js file.  For example:
+        profile: {
+            email: "joe@test.com"
+            , username: "joe"
+        }
          */
-        "instance": {
-            "id": "i962a3ce-883b-4976-a583-29440a7f638d",
-            "isTest": true // will be false when run by the workflow engine
+    }
+    , steps: {
+        local_test_step: {
+            id: 'local_test_step'
+            , type: 'module'
+            //The test runner will change YOUR_MODULE_NAME to the correct module name
+            , name: 'YOUR_MODULE_NAME'
+            , next: []
         }
-        ,"workflow": {
-            "id": "w962a3ce-883b-4976-a583-29440a7f638d"
+    }
+    , modules: {
+        //The test runner will add the proper data here
+    }
+    , data: {
+        local_test_step: {
+            //phone_number should be set from env.js
+            input: {
+                message: 'Dexter SMS module test successful!'
+            }
         }
-        ,"step": {
-            "id": "s962a3ce-883b-4976-a583-29440a7f638d"
-        }
-    },
-    "input": {
-       /*
-        * input to this step (specified in meta.json)
-        * "url" : "https://rundexter.com"
-        */
-    },
-   /*
-    * These come from env.js
-    *
-    "privates": {
-        * e.g. oauth keys, slack tokens
-        * "instapaper_consumer_key": "somerandomcharacters",
-        * "instapaper_consumer_secret": "somemorerandomcharacters"
-    },
-    *
-    */
-    "providers": {
-       "instapaper": {
-          "access_token": "{\"oauth_token_secret\":\"providerdatacapturedydexter\",\"oauth_token\":\"moreproviderdatacapturedbydexter\"}"
-       }
-    }, 
-    "settings": {
-       /*
-        * settings data passed to the step
-        * "mustache": "A sample {mustache} template"
-        */
     }
 }, env);
