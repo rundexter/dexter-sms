@@ -31,7 +31,7 @@ module.exports = {
 
           return response.statusCode == 200 
             ? this.complete({noop: true})
-            : this.fail({ message: 'Unexpected Response From Server '+response.statusCode + result });
+            : this.fail({ message: 'Unexpected Response From Server '+response.statusCode, data: result });
       }.bind(this));
   }
 };
