@@ -6,7 +6,8 @@
     "inputs": [{
         "id": "phone_number",
         "title":"Phone Number",
-        "type":"string"
+        "type":"string",
+        "selector_type":"user"
     }, {
         "id"    : "message",
         "title" : "Message",
