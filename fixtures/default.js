@@ -50,7 +50,7 @@ module.exports = _.merge({
         local_test_step: {
             //phone_number should be set from env.js
             input: {
-                message: 'Dexter SMS module test successful!'
+                message: ['Dexter SMS module test successful!']
             }
         }
     }

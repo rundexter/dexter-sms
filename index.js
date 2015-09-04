@@ -9,29 +9,32 @@ module.exports = {
         , to      = step.input('phone_number')
         , msg     = step.input('message')
         , url     = dexter.url('home')+'api/sms/?api_key='+api_key
+        , self    = this
       ;
 
       if(!url)     return this.fail('home url required');
       if(!api_key) return this.fail('api_key required');
-      if(!to)      return this.fail('phone_number required');
-      if(!msg)     return this.fail('message required');
+      if(!to.length)      return this.fail('phone_number required');
+      if(!msg.length)     return this.fail('message required');
+      msg = msg.toArray().join('|');
 
       console.log(url);
 
-      restler.post(url, {
-        data: {
-            to      : to
-          , message : msg
-        }
-        , headers: {
-            'X-Authorization': api_key
-        }
-      }).on('complete', function(result, response) {
-          if(result instanceof Error) return this.fail(result);
-
-          return response.statusCode == 200 
-            ? this.complete({noop: true})
-            : this.fail({ message: 'Unexpected Response From Server '+response.statusCode, data: result });
-      }.bind(this));
+      to.each(function(phone) {
+          restler.post(url, {
+            data: {
+                to      : phone.replace(/[^\d]/g, '')
+              , message : msg
+            }
+            , headers: {
+                'X-Authorization': api_key
+            }
+          }).on('complete', function(result, response) {
+              if(result instanceof Error) return self.fail(result);
+              return response.statusCode == 200 
+                ? self.complete({})
+                : self.fail({ message: 'Unexpected Response From Server '+response.statusCode, data: result });
+          }.bind(self));
+      });
   }
 };
