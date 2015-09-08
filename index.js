@@ -18,7 +18,7 @@ module.exports = {
       if(!msg.length)     return this.fail('message required');
       msg = msg.toArray().join('|');
 
-      console.log(url);
+      console.log('Sending',  msg, 'to', to.toArray().join(','));
 
       to.each(function(phone) {
           restler.post(url, {
