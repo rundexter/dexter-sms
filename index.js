@@ -21,24 +21,20 @@ module.exports = {
       console.log('Sending',  msg, 'to', to.toArray().join(','));
 
       to.each(function(phone) {
-          try {
-              restler.post(url, {
-                data: {
-                    to      : phone.replace(/[^\d]/g, '')
-                  , message : msg
-                }
-                , headers: {
-                    'X-Authorization': api_key
-                }
-              }).on('complete', function(result, response) {
-                  if(result instanceof Error) return self.fail(result);
-                  return response.statusCode == 200 
-                    ? self.complete({})
-                    : self.fail({ message: 'Unexpected Response From Server '+response.statusCode, data: result });
-              }.bind(self));
-          } catch(e) {
-              self.fail(e);
-          }
+          restler.post(url, {
+            data: {
+                to      : phone.replace(/[^\d]/g, '')
+              , message : msg
+            }
+            , headers: {
+                'X-Authorization': api_key
+            }
+          }).on('complete', function(result, response) {
+              if(result instanceof Error) return self.fail(result);
+              return response.statusCode == 200 
+                ? self.complete({})
+                : self.fail({ message: 'Unexpected Response From Server '+response.statusCode, data: result });
+          }.bind(self));
       });
   }
 };
