@@ -1,49 +1,42 @@
-# Process Step Implementation
-> This folder contains the scaffolding for the files required for implementing
-> a process step. 
+# Dexter Module
+> This folder contains the scaffolding for implementing a Dexter module. 
 
 ## File Details
 ### index.js
-> Entrypoint for your step and must export an object in the root that minimally
-> contains a run method. The run method executes in the scope of the
-> surrounding object (and extends a base Step prototype defined by the engine).
-> What's important is that within the run method you call
-> this.complete(&lt;args&gt;)
+> Entrypoint for your module: must export an object in the root that minimally
+> contains a run method.  The exported object will be wrapped in a Dexter
+> BaseStep class that provides the following functions:
+>   * this.run(step, dexter); //You must implement this
+>   * this.complete(data); //Call this ONCE if execution is successful
+>   * this.fail(err); //Call this ONCE if there's a critical issue
+>   * this.log(msgOrData); //Call this to log either a message or data
 
 ### package.json
-> Standard npm package.json. The name of your step will need to be unique if it
-> is published to the global process registry (not implemented yet). 
+> Standard Node.js `package.json` file that specifies the name of your module. 
+> The name of your module will need to be unique in the Dexter ecosystem.  
+> It's a good idea to prefix the module name with a unique username.
 
 ### meta.json
-> Metadata required by the process engine. You should update this --
+> Metadata required by the Dexter runtime. You should update this --
 > instructions within.
 
 ### form 
-> View README.md within for details
+> For future use by the Dexter App Editor
 
 ## Implmentation Details
 
+### Testing the module
+> Update the default fixture in `fixtures/default.js` with some artificial details for
+> testing. Minimally add dummy values for your inputs. When you're ready test your module:
+
+```shell
+$ dexter run  # or dexter run <fixture-name> 
+```
+
 ### Registering the module
-> Once you're done creating the step you must register the step with the process
-> backend before you can use it on a flow. This is done by navigating to the
-> step folder in ~/elements/<step-name> and running 
+> When you're ready to try your module out in a real App, you'll want to push it
+> into Dexter.  To do that, push it to the rundexter git server:
 
 ```shell
-$ register .
-```
-
-### Secrets
-> You are operating in a shared space, so while there is a reasonable expectation
-> of privacy, it is ultimately the developers responsibility to keep all
-> passwords and secrets off of the file system. In order to pass secret keys to
-> your flows use the following command: 
-
-```shell
-$ process_env <path-to-mod> <key> <value>
-```
-
-> The secret will be available to you at runtime via 
-
-```javascript
-this.env('key') // value will be returned
+$ dexter push
 ```
