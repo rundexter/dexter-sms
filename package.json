@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
-  "author": "Someone Somewhere",
+  "author": "Run Dexter, Inc",
   "license": "ISC",
   "dependencies": {
     "lodash": "^3.9.3",
