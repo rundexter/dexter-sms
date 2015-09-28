@@ -5,15 +5,17 @@ module.exports = {
   init: function() {
   }
   , run: function(step, dexter) {
-      var api_key = dexter.user('profile').api_key
-        , to      = step.input('phone_number')
-        , msg     = step.input('message')
-        , url     = dexter.url('home')+'api/sms/?api_key='+api_key
-        , self    = this
+      var api_key  = dexter.user('profile').api_key
+        , to       = step.input('phone_number')
+        , msg      = step.input('message')
+        , app_name = dexter.app('name')
+        , url      = dexter.url('home')+'api/app/'+app_name+'/sms/?api_key='+api_key
+        , self     = this
       ;
 
       if(!url)     return this.fail('home url required');
       if(!api_key) return this.fail('api_key required');
+      if(!app_name) return this.fail('app_name required');
       if(!to.length)      return this.fail('phone_number required');
       if(!msg.length)     return this.fail('message required');
       msg = msg.toArray().join('|');
