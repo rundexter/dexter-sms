@@ -35,7 +35,7 @@ module.exports = {
       to.each(function(phone) {
           restler.post(url, {
             data: {
-                to      : phone.replace(/[^\d]/g, '')
+                to      : phone.replace(/[^+\d]/g, '')
               , message : msg
             }
             , headers: {

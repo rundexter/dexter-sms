@@ -6,7 +6,7 @@ module.exports = _.merge({
     simulation: true
     , instance_id: 'local_test_instance'
     , urls: {
-        home: "http://rundexter.com/"
+        home: "https://rundexter.com/"
     }
     , instance_state: {
         active_step :  "local_test_step"
