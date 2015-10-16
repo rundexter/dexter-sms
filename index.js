@@ -11,6 +11,7 @@ module.exports = {
         , app_name = dexter.app('name')
         , url      = dexter.url('home')+'api/app/'+app_name+'/sms/?api_key='+api_key
         , self     = this
+        , truncMsg = ''
       ;
 
       if(!url)     return this.fail('home url required');
@@ -23,8 +24,13 @@ module.exports = {
       if(msg.replace(/[| ]/g, '') == '') {
           return this.fail('Message cannot be empty');
       }
+      //As we all know, texts are tiny...
+      if(msg.length > 160) {
+          msg = msg.substring(0, 157) + '...';
+          truncMsg = ' (truncated) ';
+      }
 
-      console.log('Sending',  msg, 'to', to.toArray().join(','));
+      console.log('Sending',  msg + truncMsg, 'to', to.toArray().join(','));
 
       to.each(function(phone) {
           restler.post(url, {
