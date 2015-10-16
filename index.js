@@ -19,6 +19,10 @@ module.exports = {
       if(!to.length)      return this.fail('phone_number required');
       if(!msg.length)     return this.fail('message required');
       msg = msg.toArray().join('|');
+      //There's an edge case where the data has nothing but false-y things in it ('', undefined, null, etc.)...make sure we handle that.
+      if(msg.replace(/[| ]/g, '') == '') {
+          return this.fail('Message cannot be empty');
+      }
 
       console.log('Sending',  msg, 'to', to.toArray().join(','));
 
