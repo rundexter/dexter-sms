@@ -56,7 +56,7 @@ module.exports = {
                   ), result.reason);
               }
           });
-          this.complete({});
+          self.complete({});
       });
   }
   , getPhoneNumber: function(phone) {
