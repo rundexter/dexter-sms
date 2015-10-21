@@ -66,7 +66,7 @@ module.exports = {
           //First, if the number starts with a +, validate it as an international number
           phoneFinal = phoneUtil.parse(phone, '');
           if(phoneFinal && phoneUtil.isValidNumber(phoneFinal)) {
-              phoneFinal = phoneUtil.format(phoneFinal, PNF.INTERNATIONAL);
+              phoneFinal = phoneUtil.format(phoneFinal, PNF.E164);
           } else {
               throw new Error('Invalid international phone number');
           }
@@ -74,7 +74,7 @@ module.exports = {
           //We'll assume it's a US number
           phoneFinal = phoneUtil.parse(phone, 'US');
           if(phoneFinal && phoneUtil.isValidNumber(phoneFinal)) {
-              phoneFinal = phoneUtil.format(phoneFinal, PNF.US);
+              phoneFinal = phoneUtil.format(phoneFinal, PNF.E164);
           } else {
               throw new Error('Invalid US phone number - international numbers should start with +[country code]');
           }
