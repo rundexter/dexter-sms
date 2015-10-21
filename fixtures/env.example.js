@@ -1,4 +1,8 @@
 module.exports = {
+    workflow: {
+        //You have to make this a real workflow slug
+        name: '!!!'
+    },
     "user": {
         "profile": {
             "email": "YOUR_EMAIL"

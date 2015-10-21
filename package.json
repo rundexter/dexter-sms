@@ -6,7 +6,9 @@
   "author": "Run Dexter, Inc",
   "license": "MIT",
   "dependencies": {
+    "google-libphonenumber": "^1.0.7",
     "lodash": "^3.9.3",
+    "q": "^1.4.1",
     "restler": "^3.2.2"
   }
 }
