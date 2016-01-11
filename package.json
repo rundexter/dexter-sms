@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "Run Dexter, Inc",
   "license": "MIT",
+  "private": true,
   "dependencies": {
     "google-libphonenumber": "^1.0.7",
     "lodash": "^3.9.3",
