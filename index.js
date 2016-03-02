@@ -1,15 +1,16 @@
-var restler = require('restler')
-    , util = require('util')
-    , PNF = require('google-libphonenumber').PhoneNumberFormat
-    , phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance()
-    , Q = require('q')
+var restler     = require('restler')
+  , util        = require('util')
+  , PNF         = require('google-libphonenumber').PhoneNumberFormat
+  , phoneUtil   = require('google-libphonenumber').PhoneNumberUtil.getInstance()
+  , Q           = require('q')
+  , _           = require('lodash')
 ;
 
 module.exports = {
   run: function(step, dexter) {
       var api_key  = dexter.user('profile').api_key
-        , to       = step.input('phone_number')
-        , msg      = step.input('message')
+        , tos      = step.input('phone_number')
+        , msgs     = step.input('message')
         , app_name = dexter.app('name')
         , url      = dexter.url('home')+'api/app/'+app_name+'/sms/?api_key='+api_key
         , simulate = Boolean(dexter.environment('dexter_sms_simulate', false))
@@ -21,39 +22,61 @@ module.exports = {
       if(!url)            return this.fail('home url required');
       if(!api_key)        return this.fail('api_key required');
       if(!app_name)       return this.fail('app_name required');
-      if(!to.length)      return this.fail('phone_number required');
-      if(!msg.length)     return this.fail('message required');
-      msg = msg.toArray().join('|');
+      if(!tos.length)     return this.fail('phone_number required');
+      if(!msgs.length)    return this.fail('message required');
 
-      //There's an edge case where the data has nothing but false-y things in it ('', undefined, null, etc.)...make sure we handle that.
-      if(msg.replace(/[| ]/g, '') === '') {
-          return this.fail('Message cannot be empty');
-      }
-      //As we all know, texts are tiny...
-      if(msg.length > 160) {
-          msg = msg.substring(0, 157) + '...';
-          truncMsg = ' (truncated) ';
-      }
-
-      //Let the user know what's happening
-      self.log(util.format('Sending "%s" to "%s"'
-          , msg + truncMsg
-          , to.toArray().join(',')
-      ));
-      if(simulate) {
-          self.log('SIMULATION ONLY - no texts will be sent.  Remove the dexter_sms_debug private variable to send for real.');
-      }
-
-      to.each(function(phone) {
-          sendQueue.push(self.send(phone, msg, api_key, url, simulate));
+      _.map(msgs, function(msg) {
+          //There's an edge case where the data has nothing but false-y things in it ('', undefined, null, etc.)...make sure we handle that.
+          if(msg.replace(/[| ]/g, '') === '') {
+              return this.fail('Message cannot be empty');
+          }
+          //As we all know, texts are tiny...
+          if(msg.length > 160) {
+              msg = msg.substring(0, 157) + '...';
+              truncMsg = ' (truncated) ';
+          }
       });
+
+      if(msgs.length > tos.length) {
+          msgs.each(function(msg, idx) {
+              var to = tos[idx] || tos[0];
+              //Let the user know what's happening
+              self.log(util.format('Sending "%s" to "%s"'
+                  , msg + truncMsg
+                  , tos.toArray().join(',')
+              ));
+              if(simulate) {
+                  self.log('SIMULATION ONLY - no texts will be sent.  Remove the dexter_sms_debug private variable to send for real.');
+              }
+
+              sendQueue.push(self.send(to, msg, api_key, url, simulate));
+          });
+      } else {
+          tos.each(function(phone, idx) {
+              var msg = msgs[idx] || msgs[0]
+                , to  = phone
+              ;
+
+              //Let the user know what's happening
+              self.log(util.format('Sending "%s" to "%s"'
+                  , msg + truncMsg
+                  , phone
+              ));
+              if(simulate) {
+                  self.log('SIMULATION ONLY - no texts will be sent.  Remove the dexter_sms_debug private variable to send for real.');
+              }
+
+              sendQueue.push(self.send(phone, msg, api_key, url, simulate));
+          });
+      }
+
       Q.allSettled(sendQueue).then(function(results) {
           results.forEach(function(result) {
               if(result.state === 'rejected') {
                   self.log(util.format('Failed sending to %s - %s', 
                       result.reason.phone
                       , result.reason.error.message
-                  ), result.reason);
+                  ));
               }
           });
           self.complete({});
@@ -126,7 +149,6 @@ module.exports = {
                                   , data: result
                               }
                           });
-                          console.log(result.error);
                       }
                   } else {
                       if(result.success) {
