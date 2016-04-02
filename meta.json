@@ -6,12 +6,14 @@
     "inputs": [{
         "id": "phone_number",
         "title":"Phone Number",
-        "type":"string",
         "selector_type":"user"
     }, {
         "id"    : "message",
-        "title" : "Message",
-        "type"  : "string"
+        "title" : "Message"
+    }, {
+        "id"    : "media_url",
+        "title" : "Media URL",
+        "description" : "A valid URL to a compatible media item. Compatible items found here: https://www.twilio.com/docs/api/rest/accepted-mime-types"
     }],
     //Required. Outputs the module emits.
     "outputs": [],

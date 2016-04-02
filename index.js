@@ -8,8 +8,9 @@ var restler     = require('restler')
 
 module.exports = {
   run: function(step, dexter) {
-      var api_key  = dexter.user('profile').api_key
-        , tos      = step.input('phone_number')
+      var api_key    = dexter.user('profile').api_key
+        , tos        = step.input('phone_number')
+        , media_urls = step.input('media_url')
         , msgs     = step.input('message')
         , app_name = dexter.app('name')
         , url      = dexter.url('home')+'api/app/'+app_name+'/sms/?api_key='+api_key
@@ -31,15 +32,18 @@ module.exports = {
               return this.fail('Message cannot be empty');
           }
           //As we all know, texts are tiny...
-          if(msg.length > 160) {
-              msg = msg.substring(0, 157) + '...';
+          if(msg.length > 1600) {
+              msg = msg.substring(0, 1597) + '...';
               truncMsg = ' (truncated) ';
           }
       });
 
       if(msgs.length > tos.length) {
           msgs.each(function(msg, idx) {
-              var to = tos[idx] || tos[0];
+              var to = tos[idx] || tos[0]
+                , mediaUrl = media_urls[idx]
+              ;
+
               //Let the user know what's happening
               self.log(util.format('Sending "%s" to "%s"'
                   , msg + truncMsg
@@ -49,12 +53,13 @@ module.exports = {
                   self.log('SIMULATION ONLY - no texts will be sent.  Remove the dexter_sms_debug private variable to send for real.');
               }
 
-              sendQueue.push(self.send(to, msg, api_key, url, simulate));
+              sendQueue.push(self.send(to, msg, mediaUrl, api_key, url, simulate));
           });
       } else {
           tos.each(function(phone, idx) {
               var msg = msgs[idx] || msgs[0]
                 , to  = phone
+                , mediaUrl = media_urls[idx]
               ;
 
               //Let the user know what's happening
@@ -66,7 +71,7 @@ module.exports = {
                   self.log('SIMULATION ONLY - no texts will be sent.  Remove the dexter_sms_debug private variable to send for real.');
               }
 
-              sendQueue.push(self.send(phone, msg, api_key, url, simulate));
+              sendQueue.push(self.send(phone, msg, mediaUrl, api_key, url, simulate));
           });
       }
 
@@ -104,7 +109,7 @@ module.exports = {
       }
       return phoneFinal;
   }
-  , send: function(phone, msg, api_key, url, simulate) {
+  , send: function(phone, msg, mediaUrl, api_key, url, simulate) {
       var deferred = Q.defer()
           , self = this
           , fixedPhone
@@ -120,8 +125,9 @@ module.exports = {
           } else {
               restler.post(url, {
                 data: {
-                    to      : fixedPhone 
-                  , message : msg
+                    to        : fixedPhone 
+                  , message   : msg
+                  , mediaUrl  : mediaUrl
                 }
                 , headers: {
                     'X-Authorization': api_key
