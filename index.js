@@ -24,8 +24,12 @@ module.exports = {
       if(!api_key)        return this.fail('api_key required');
       if(!app_name)       return this.fail('app_name required');
       if(!tos.length)     return this.fail('phone_number required');
-      if(!msgs.length)    return this.fail('message required');
+      if(!msgs.length && !media_urls.length) return this.fail('message or media_url required');
 
+      /*
+       * Pretty sure this code isn't doing anything since it's not assigning anywhere
+       * need to investigate
+       */
       _.map(msgs, function(msg) {
           //There's an edge case where the data has nothing but false-y things in it ('', undefined, null, etc.)...make sure we handle that.
           if(msg.replace(/[| ]/g, '') === '') {
@@ -46,7 +50,7 @@ module.exports = {
 
               //Let the user know what's happening
               self.log(util.format('Sending "%s" to "%s"'
-                  , msg + truncMsg
+                  , msg ? (msg + truncMsg) : mediaUrl
                   , tos.toArray().join(',')
               ));
               if(simulate) {
@@ -64,7 +68,7 @@ module.exports = {
 
               //Let the user know what's happening
               self.log(util.format('Sending "%s" to "%s"'
-                  , msg + truncMsg
+                  , msg ? (msg + truncMsg) : mediaUrl
                   , phone
               ));
               if(simulate) {
@@ -78,9 +82,10 @@ module.exports = {
       Q.allSettled(sendQueue).then(function(results) {
           results.forEach(function(result) {
               if(result.state === 'rejected') {
-                  self.log(util.format('Failed sending to %s - %s', 
+                  self.log(util.format('Failed sending to %s - %s - %s', 
                       result.reason.phone
                       , result.reason.error.message
+                      , result.reason.error.data.error.message.join(',')
                   ));
               }
           });
